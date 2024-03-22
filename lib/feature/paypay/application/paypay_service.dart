@@ -1,12 +1,12 @@
+// ignore_for_file: avoid_setters_without_getters
+
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:paypay_uo/paypay_uo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../config/random_num_generate.dart';
 import '../../merchandise/domain/merchandise.dart';
-import 'merchant_payment_id.dart';
 
 part 'paypay_service.g.dart';
 
@@ -44,26 +44,26 @@ class PayPayService extends _$PayPayService {
       orderDescription: merchandise.description,
       requestedAt: PayPayClient.getRequestdAt(),
       redirectType: 'WEB_LINK',
-      
       redirectUrl: 'https://detarame.page.link/success',
     );
-    // 72708379839329
 
-    ref
-        .read(merchantPaymentIdNotifierProvider.notifier)
-        .setMerchantPaymentId(merchantPaymentId);
+    // リダイレクトした際に取引結果に merchantPaymentId の値が存在するのかを確認するため
+    ref.read(merchantPaymentIdNotifierProvider.notifier).setMerchantPaymentId =
+        merchantPaymentId;
 
     final data = await state.codeApi.createQRCode(payload);
     return ApiResult.fromJson(jsonDecode(data.body) as Map<String, dynamic>);
+  }
+}
 
-    // final response =
-    //     await state.codeApi.getPaymentDetails(payload.merchantPaymentId);
+@Riverpod(keepAlive: true)
+class MerchantPaymentIdNotifier extends _$MerchantPaymentIdNotifier {
+  @override
+  String build() {
+    return '';
+  }
 
-    // final response =
-    //     await state.codeApi.getPaymentDetails('TESTMERCH_PAY_812b2dee8e37');
-    // logger.v('response: $response');
-
-    // final apiResult = PayPayClient.convertResponseToApiResult(response);
-    // logger.i('apiResult: $apiResult');
+  set setMerchantPaymentId(String id) {
+    state = id;
   }
 }

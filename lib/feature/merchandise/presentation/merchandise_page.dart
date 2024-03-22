@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../config/logger.dart';
 import '../../editor/editor_page.dart';
-import '../../paypay/application/merchant_payment_id.dart';
 import '../../paypay/application/paypay_service.dart';
 import '../application/merchandise_service.dart';
 import 'widget/merchandise_item.dart';
@@ -32,13 +31,12 @@ class MerchandisePageState extends ConsumerState {
   final dynamicLinks = FirebaseDynamicLinks.instance;
 
   // DynamicLinks の初期化
-  // リダイレクト時にリンクを取得する
   Future<void> initDynamicLinks(BuildContext context) async {
     dynamicLinks.onLink.listen((_) async {
       final paypayClient = ref.watch(payPayServiceProvider);
       final merchantPaymentId = ref.watch(merchantPaymentIdNotifierProvider);
       final response =
-        await  paypayClient.codeApi.getPaymentDetails(merchantPaymentId!);
+          await paypayClient.codeApi.getPaymentDetails(merchantPaymentId);
       final apiResult = PayPayClient.convertResponseToApiResult(response);
       logger.i('apiResult: $apiResult');
     }).onError((error) {});
