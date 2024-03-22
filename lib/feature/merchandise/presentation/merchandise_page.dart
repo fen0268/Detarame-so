@@ -38,7 +38,7 @@ class MerchandisePageState extends ConsumerState {
       final paypayClient = ref.watch(payPayServiceProvider);
       final merchantPaymentId = ref.watch(merchantPaymentIdNotifierProvider);
       final response =
-        await  paypayClient.codeApi.getPaymentDetails('91716578280023');
+        await  paypayClient.codeApi.getPaymentDetails(merchantPaymentId!);
       final apiResult = PayPayClient.convertResponseToApiResult(response);
       logger.i('apiResult: $apiResult');
     }).onError((error) {});
