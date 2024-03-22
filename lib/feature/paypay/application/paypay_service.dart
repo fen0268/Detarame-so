@@ -1,25 +1,29 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:paypay_uo/paypay_uo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../config/random_num_generate.dart';
 import '../../merchandise/domain/merchandise.dart';
-import '../domain/paypay_response.dart';
+import 'merchant_payment_id.dart';
 
 part 'paypay_service.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PayPayService extends _$PayPayService {
   @override
   PayPayClient build() {
-    return initPayPay();
+    return initPayPayClient();
   }
 
-  PayPayClient initPayPay() {
+  PayPayClient initPayPayClient() {
     // APIキー / Key ID
     const apiKey = 'a_QhqinDJCfZ_yG2H';
+
     // シークレット / Key Secret
     const apiSecret = 'fC1N+0AOKya6dHtu+roKWOO0pC3AKmunNzC6qhRQYBg=';
+
     // 加盟店ID / Merchant ID
     const assumeMerchant = '743220803855630336';
 
@@ -32,32 +36,34 @@ class PayPayService extends _$PayPayService {
     return PayPayClient(auth: paypayAuth, apiMode: ApiMode.staging);
   }
 
-  Future<PayPayResponse> purchasePhase(ReadMerchandise merchandise) async {
+  Future<ApiResult> purchasePhase(ReadMerchandise merchandise) async {
+    final merchantPaymentId = randomIntWithRange() + randomIntWithRange();
     final payload = CreateQrCodePayload(
-      merchantPaymentId: PayPayClient.getTestMerchantPaymentId(),
+      merchantPaymentId: merchantPaymentId,
       amount: Amount(currency: 'JPY', amount: merchandise.price),
-      orderItems: [
-        OrderItem(
-          name: merchandise.name,
-          quantity: 1,
-          unitPrice: Amount(
-            currency: 'JPY',
-            amount: merchandise.price,
-          ),
-        ),
-      ],
+      orderDescription: merchandise.description,
       requestedAt: PayPayClient.getRequestdAt(),
       redirectType: 'WEB_LINK',
+      
       redirectUrl: 'https://detarame.page.link/success',
     );
+    // 72708379839329
 
-    // Exception has occurred.
-    // _ClientSocketException
-    //(Failed host lookup: 'stg-api.sandbox.paypay.ne.jp')
+    ref
+        .read(merchantPaymentIdNotifierProvider.notifier)
+        .setMerchantPaymentId(merchantPaymentId);
+
     final data = await state.codeApi.createQRCode(payload);
+    return ApiResult.fromJson(jsonDecode(data.body) as Map<String, dynamic>);
 
-    return PayPayResponse.fromJson(
-      jsonDecode(data.body) as Map<String, dynamic>,
-    );
+    // final response =
+    //     await state.codeApi.getPaymentDetails(payload.merchantPaymentId);
+
+    // final response =
+    //     await state.codeApi.getPaymentDetails('TESTMERCH_PAY_812b2dee8e37');
+    // logger.v('response: $response');
+
+    // final apiResult = PayPayClient.convertResponseToApiResult(response);
+    // logger.i('apiResult: $apiResult');
   }
 }

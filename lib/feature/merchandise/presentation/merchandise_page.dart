@@ -2,10 +2,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:paypay_uo/paypay_uo.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../config/logger.dart';
 import '../../editor/editor_page.dart';
+import '../../paypay/application/merchant_payment_id.dart';
 import '../../paypay/application/paypay_service.dart';
 import '../application/merchandise_service.dart';
 import 'widget/merchandise_item.dart';
@@ -29,12 +31,16 @@ class MerchandisePageState extends ConsumerState {
 
   final dynamicLinks = FirebaseDynamicLinks.instance;
 
-  // dynamicLinks の初期化
+  // DynamicLinks の初期化
   // リダイレクト時にリンクを取得する
   Future<void> initDynamicLinks(BuildContext context) async {
-    dynamicLinks.onLink.listen((dynamicLinkData) {
-      final uri = dynamicLinkData.link;
-      logger.v('uri: $uri');
+    dynamicLinks.onLink.listen((_) async {
+      final paypayClient = ref.watch(payPayServiceProvider);
+      final merchantPaymentId = ref.watch(merchantPaymentIdNotifierProvider);
+      final response =
+        await  paypayClient.codeApi.getPaymentDetails('91716578280023');
+      final apiResult = PayPayClient.convertResponseToApiResult(response);
+      logger.i('apiResult: $apiResult');
     }).onError((error) {});
   }
 
@@ -50,7 +56,7 @@ class MerchandisePageState extends ConsumerState {
     final stream = ref.watch(streamFetchMerchandiseProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('でたらめ荘'),
+        title: const Text('Sample PayPay'),
         actions: [
           IconButton(
             onPressed: () {
@@ -76,7 +82,7 @@ class MerchandisePageState extends ConsumerState {
                           .read(payPayServiceProvider.notifier)
                           .purchasePhase(data[index]);
                       if (response.resultInfo.code == 'SUCCESS') {
-                        await openPayPaySite(response.data.url);
+                        await openPayPaySite(response.data!['url'] as String);
                       }
                     },
                     child: data[index].isStock

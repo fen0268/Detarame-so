@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'paypay_service.dart';
+part of 'merchant_payment_id.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$payPayServiceHash() => r'f14adf87c4e41e1b2e0d7a0c5287c25a81cca483';
+String _$merchantPaymentIdNotifierHash() =>
+    r'49281efc6b13107ad1871984e920214524ae2461';
 
-/// See also [PayPayService].
-@ProviderFor(PayPayService)
-final payPayServiceProvider =
-    NotifierProvider<PayPayService, PayPayClient>.internal(
-  PayPayService.new,
-  name: r'payPayServiceProvider',
+/// See also [MerchantPaymentIdNotifier].
+@ProviderFor(MerchantPaymentIdNotifier)
+final merchantPaymentIdNotifierProvider =
+    NotifierProvider<MerchantPaymentIdNotifier, String?>.internal(
+  MerchantPaymentIdNotifier.new,
+  name: r'merchantPaymentIdNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$payPayServiceHash,
+      : _$merchantPaymentIdNotifierHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$PayPayService = Notifier<PayPayClient>;
+typedef _$MerchantPaymentIdNotifier = Notifier<String?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

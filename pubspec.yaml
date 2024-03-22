@@ -1,11 +1,11 @@
-name: detarame
-description: "A new Flutter project."
-publish_to: 'none' 
+name: paypay_sample
+description: "This Project is a sample of PayPay integration with Flutter."
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.2.6 <4.0.0'
+  sdk: ">=3.2.6 <4.0.0"
 
 dependencies:
   flutter:
@@ -36,23 +36,24 @@ dependencies:
   # UI
   url_launcher: ^6.0.20
   image_picker: ^1.0.7
+  gap: ^3.0.1
 
   # Utility
   flutterfire_gen_utils: ^0.4.1
   logger: ^1.4.0
   flutter_gen: ^5.4.0
   dotenv: ^4.2.0
-  gap: ^3.0.1
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  freezed: 
+  freezed:
   build_runner:
-  json_serializable: 
+  json_serializable:
   flutterfire_gen:
-  pedantic_mono: 
-  riverpod_generator: 
+  pedantic_mono:
+  riverpod_generator:
   flutter_gen_runner:
 
 flutter:
